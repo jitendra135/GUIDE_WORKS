@@ -1,0 +1,57 @@
+/* ==========================================================================
+   GuideConnect - Sleek Dark Theme Overrides & Luxury Glow Effects
+   ========================================================================== */
+
+body.dark-mode {
+  --bg-main: #090e17;
+  --bg-card: #0f172a;
+  --bg-card-subtle: #1e293b;
+  --bg-nav: rgba(15, 23, 42, 0.94);
+  --border-color: #334155;
+  --border-light: #1e293b;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-inverse: #0f172a;
+
+  --glass-bg: rgba(15, 23, 42, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+
+  --primary-light: rgba(15, 118, 110, 0.25);
+  --accent-emerald-light: rgba(16, 185, 129, 0.2);
+  --accent-amber-light: rgba(245, 158, 11, 0.2);
+  --accent-rose-light: rgba(244, 63, 94, 0.22);
+  --accent-indigo-light: rgba(99, 102, 241, 0.22);
+}
+
+body.dark-mode .hero-section {
+  background: radial-gradient(circle at 50% 10%, rgba(20, 184, 166, 0.16) 0%, rgba(9, 14, 23, 0) 70%);
+}
+
+body.dark-mode .guide-card {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .guide-card:hover {
+  border-color: rgba(20, 184, 166, 0.6);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(20, 184, 166, 0.2);
+}
+
+body.dark-mode .verify-badge.emerald { color: #34d399; }
+body.dark-mode .verify-badge.blue { color: #60a5fa; }
+body.dark-mode .verify-badge.amber { color: #fbbf24; }
+
+body.dark-mode .leaflet-tile {
+  filter: brightness(0.85) invert(1) contrast(3) hue-rotate(200deg) saturate(0.35) brightness(0.7);
+}
+
+body.dark-mode .search-field select option,
+body.dark-mode select option {
+  background: #0f172a;
+  color: #f8fafc;
+}

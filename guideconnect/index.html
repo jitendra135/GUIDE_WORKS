@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuideConnect India | Find & Book Verified Local Guides (Top 1%)</title>
+  <meta name="description" content="Discover India through verified local scholars, historians, and food curators. AI-powered smart matching with Ministry of Tourism licensed guides. Escrow protected with 24/7 Tourist SOS.">
+  <meta name="keywords" content="India tour guides, search local guides India, Varanasi guide, Jaipur tour guide, Taj Mahal guide, Kerala backwaters guide, Incredible India, Ladakh trek guide">
+  <meta name="author" content="GuideConnect India">
+
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Core & Component Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dark-mode.css">
+</head>
+<body>
+
+  <!-- Ambient Glowing Orbs Background -->
+  <div class="orb-wrap" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Top Safety & Trust Bar -->
+  <aside class="top-safety-bar" aria-label="Safety announcements">
+    <div class="badge-group">
+      <span>🛡️ <strong>100% Verified Credentials:</strong> Ministry of Tourism &amp; ASI Licensed Guides</span>
+      <span>🔒 <strong>Escrow Protected:</strong> Guides Paid Only After Tour Completion</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="sos-quick-btn trigger-sos-modal" id="top-sos-trigger-btn" aria-label="Open 24/7 Tourist SOS Emergency Center">
+        🚨 1363 / 112 Tourist SOS
+      </button>
+      <span style="font-size: 0.78rem; opacity: 0.85;">Over 5,200+ Verified Guides Across 28 Indian States</span>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="navbar" id="app-navbar">
+    <div class="nav-container">
+      <!-- Brand Logo -->
+      <a href="#" class="nav-brand" id="brand-logo-link" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+        <div class="brand-logo-icon">
+          🧭
+        </div>
+        <span>Guide<span>Connect</span></span>
+        <span class="brand-badge">India 🇮🇳</span>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="#explore" class="nav-link active" data-view="explore" id="nav-explore">Explore Guides</a></li>
+          <li><a href="#ai-match" class="nav-link trigger-ai-match" data-view="ai-match" id="nav-ai-match">⚡ AI Matchmaker</a></li>
+          <li><a href="#map" class="nav-link" data-view="map" id="nav-map">India Map</a></li>
+          <li><a href="#vip" class="nav-link" onclick="document.getElementById('section-vip-lounge').scrollIntoView({behavior:'smooth'});return false;">👑 VIP Lounge</a></li>
+          <li><a href="#trips" class="nav-link" data-view="trips" id="nav-trips">My Bookings</a></li>
+          <li><a href="#safety" class="nav-link trigger-sos-modal" data-view="safety" id="nav-safety">Safety &amp; SOS</a></li>
+        </ul>
+      </nav>
+
+      <!-- Nav Actions & Switchers -->
+      <div class="nav-actions">
+        <!-- Live Currency Switcher -->
+        <div class="currency-selector-wrap" title="Change Currency">
+          <select id="currency-select" aria-label="Currency Select">
+            <option value="INR">₹ INR</option>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="JPY">¥ JPY</option>
+          </select>
+        </div>
+
+        <!-- Dual Persona Switcher (Tourist ⇄ Local Guide) -->
+        <div class="persona-toggle" title="Switch between Traveler &amp; Local Guide Mode">
+          <button class="persona-btn active" data-persona="tourist" id="persona-tourist-btn">
+            🎒 Tourist
+          </button>
+          <button class="persona-btn" data-persona="guide" id="persona-guide-btn">
+            🧑‍💼 Guide Portal
+          </button>
+        </div>
+
+        <!-- Wishlist Button -->
+        <button class="nav-icon-btn" id="nav-wishlist-btn" title="Saved Favorite Guides" onclick="app.showWishlistModal()">
+          ♥
+          <span class="badge-count" id="favs-count-badge">0</span>
+        </button>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button class="nav-icon-btn" id="theme-toggle-btn" title="Toggle Theme">
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
+
+        <!-- AI Matchmaker CTA in Header -->
+        <button class="btn btn-ai-glow trigger-ai-match" id="header-ai-match-btn">
+          ⚡ Match Me
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       TOURIST EXPERIENCE VIEW (LOCATION-FIRST SEARCH & DISCOVERY)
+       ========================================================================= -->
+  <main id="tourist-experience-view">
+
+    <!-- Location-First Hero Section -->
+    <section class="hero-section" id="hero-section">
+      <div class="container hero-content">
+        <div class="hero-tag">
+          📍 Location-Based Verified Guide Discovery • Incredible India
+        </div>
+
+        <h1 class="hero-title">
+          Experience India Through the Eyes of <span class="highlight-text">Elite Locals</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          <span id="hero-dynamic-subtitle" class="typing-text">Experience the eternal city's spiritual depth in Varanasi...</span>
+        </p>
+
+        <!-- Prominent Location-First Omni Search Bar -->
+        <div class="omni-search-wrapper" id="omni-search-box">
+          
+          <!-- Location Input with Live Autocomplete & Geolocation -->
+          <div class="search-field location-search-container">
+            <label for="omni-location-input">📍 Search Location / Heritage City</label>
+            <div class="location-input-wrap">
+              <input type="text" id="omni-location-input" placeholder="Type city (e.g. Varanasi, Jaipur, Agra, Kerala, Ladakh)..." autocomplete="off">
+            </div>
+
+            <!-- Autocomplete Dropdown -->
+            <div class="location-autocomplete-dropdown" id="location-autocomplete-dropdown"></div>
+          </div>
+
+          <!-- Experience Category Selector -->
+          <div class="search-field">
+            <label for="omni-cat-select">🎯 Experience Type</label>
+            <select id="omni-cat-select">
+              <option value="all">All Experiences</option>
+              <option value="Spiritual & Wellness">Spiritual Darshan &amp; Ghats</option>
+              <option value="Culture & History">Royal Forts &amp; Palaces</option>
+              <option value="Culinary & Street Food">Street Food &amp; Royal Thalis</option>
+              <option value="Nature & Adventure">Himalayan Treks &amp; Backwaters</option>
+              <option value="Bazaars & Artisans">Art, Gems &amp; Bazaars</option>
+              <option value="Hidden Gems">Secret Steps &amp; Off-Beat</option>
+            </select>
+          </div>
+
+          <!-- Travel Date -->
+          <div class="search-field">
+            <label for="omni-date-input">📅 Travel Date</label>
+            <input type="date" id="omni-date-input" value="2026-09-01">
+          </div>
+
+          <!-- Detect GPS Location Button -->
+          <button class="btn btn-secondary" id="use-my-location-btn" title="Detect My Live Location in India" style="padding: 0.75rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+            🎯 GPS Location
+          </button>
+
+          <!-- Search Action Buttons -->
+          <div class="search-actions" style="display:flex;gap:0.4rem;">
+            <button class="btn btn-primary" id="omni-search-btn" title="Search Guides in Location">
+              🔍 Find Guides
+            </button>
+            <button class="btn btn-ai-glow trigger-ai-match" id="omni-ai-match-btn" title="Run AI Recommendation Engine">
+              ⚡ AI Match
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Destination Badges Bar -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-top: -0.75rem; margin-bottom: 2rem;">
+          <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">Popular Heritage Hubs:</span>
+          <button class="quick-city-chip btn-sm" data-city="Varanasi">🕉️ Varanasi</button>
+          <button class="quick-city-chip btn-sm" data-city="Jaipur">🏰 Jaipur</button>
+          <button class="quick-city-chip btn-sm" data-city="Agra">🕌 Agra (Taj Mahal)</button>
+          <button class="quick-city-chip btn-sm" data-city="Kerala">🌴 Kerala Backwaters</button>
+          <button class="quick-city-chip btn-sm" data-city="Ladakh">🏔️ Leh &amp; Ladakh</button>
+          <button class="quick-city-chip btn-sm" data-city="Goa">⛵ Goa Heritage</button>
+          <button class="quick-city-chip btn-sm" data-city="Udaipur">👑 Udaipur</button>
+          <button class="quick-city-chip btn-sm" data-city="Rishikesh">🧘 Rishikesh</button>
+          <button class="quick-city-chip btn-sm" data-city="Hampi">🛕 Hampi</button>
+          <button class="quick-city-chip btn-sm" data-city="Kolkata">🎨 Kolkata</button>
+          <button class="quick-city-chip btn-sm" data-city="Mumbai">🏙️ Mumbai</button>
+          <button class="quick-city-chip btn-sm" data-city="Amritsar">✨ Amritsar</button>
+        </div>
+
+        <!-- Trust Metrics Bar -->
+        <div class="trust-metrics-grid">
+          <div class="trust-metric-card">
+            <div class="metric-icon emerald">🛡️</div>
+            <div>
+              <div class="metric-val">100% MoT &amp; ASI</div>
+              <div class="metric-desc">Ministry of Tourism &amp; Police Verified</div>
+            </div>
+          </div>
+          <div class="trust-metric-card">
+            <div class="metric-icon blue">⚡</div>
+            <div>
+              <div class="metric-val">98.4% AI Match</div>
+              <div class="metric-desc">Personalized Recommendation Rate</div>
+            </div>
+          </div>
+          <div class="trust-metric-card">
+            <div class="metric-icon amber">★ 4.98 / 5</div>
+            <div>
+              <div class="metric-val">38,000+ Reviews</div>
+              <div class="metric-desc">Verified Tourist &amp; Family Feedback</div>
+            </div>
+          </div>
+          <div class="trust-metric-card">
+            <div class="metric-icon purple">🇮🇳 12+ Tongues</div>
+            <div>
+              <div class="metric-val">Hindi, Regional &amp; Global</div>
+              <div class="metric-desc">Live In-App Auto-Translation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curated Circuits / Categories Grid -->
+    <section class="container" style="padding-top: 1rem; padding-bottom: 2.5rem;">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2>Curated Indian Heritage Journeys</h2>
+          <p>Choose your passion to discover academic guides, scholars, and local masters.</p>
+        </div>
+      </div>
+
+      <div class="categories-grid">
+        <div class="cat-card" onclick="document.getElementById('omni-cat-select').value='Culture & History';document.getElementById('omni-cat-select').dispatchEvent(new Event('change'));document.getElementById('guides-discovery-section').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-icon-box">🏛️</div>
+          <h3>Heritage &amp; Palaces</h3>
+          <p>Deconstruct Mughal geometry, explore Rajput fortresses, and uncover secret underground passages.</p>
+        </div>
+        <div class="cat-card" onclick="document.getElementById('omni-cat-select').value='Culinary & Street Food';document.getElementById('omni-cat-select').dispatchEvent(new Event('change'));document.getElementById('guides-discovery-section').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-icon-box">🍛</div>
+          <h3>Safe Spice Trails &amp; Food</h3>
+          <p>Taste 100% hygienic, multi-generational street food recipes and historic royal recipes tested for travelers.</p>
+        </div>
+        <div class="cat-card" onclick="document.getElementById('omni-cat-select').value='Spiritual & Wellness';document.getElementById('omni-cat-select').dispatchEvent(new Event('change'));document.getElementById('guides-discovery-section').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-icon-box">🪔</div>
+          <h3>Spiritual Ghats &amp; Temples</h3>
+          <p>Experience dawn boat rituals on the sacred Ganga, Vedic philosophy discourses, and private temple aartis.</p>
+        </div>
+        <div class="cat-card" onclick="document.getElementById('omni-cat-select').value='Bazaars & Artisans';document.getElementById('omni-cat-select').dispatchEvent(new Event('change'));document.getElementById('guides-discovery-section').scrollIntoView({behavior:'smooth'});">
+          <div class="cat-icon-box">🛍️</div>
+          <h3>Bazaars &amp; Gem Artisans</h3>
+          <p>Navigate vibrant spice markets, watch master gemstone cutting, and connect with block-printing families.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Discovery Section -->
+    <section class="container" id="guides-discovery-section" style="padding-top: 1rem; padding-bottom: 3.5rem;">
+      
+      <!-- Dynamic Location Spotlight Area -->
+      <div id="location-spotlight-area"></div>
+
+      <!-- Section Header -->
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2>
+            Verified Local Guides
+            <span style="font-size: 0.92rem; font-weight: 700; color: var(--accent-emerald); background: var(--accent-emerald-light); padding: 0.2rem 0.65rem; border-radius: var(--radius-full); margin-left: 0.5rem;">
+              ✓ Anti-Tout &amp; Scam Shield Active
+            </span>
+          </h2>
+          <p id="guides-result-count">12 Verified Local Guides Available Across India</p>
+        </div>
+
+        <button class="btn btn-ai-glow trigger-ai-match" style="padding: 0.55rem 1.1rem; font-size: 0.88rem;">
+          ⚡ Let AI Match You with the Ideal Guide
+        </button>
+      </div>
+
+      <!-- Explore 3-Column Layout: Sidebar Filters + Cards Grid + Live Map -->
+      <div class="explore-layout">
+        
+        <!-- Filters Sidebar (Left) -->
+        <aside class="filters-sidebar">
+          <div class="sidebar-header">
+            <h3>Refine Guides</h3>
+            <button class="btn-clear-filters" onclick="app.resetLocationFilter()">Reset All</button>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filter-keyword-input">Search by Name or Tag</label>
+            <input type="text" id="filter-keyword-input" class="filter-select" placeholder="e.g. Aarav, Taj Mahal...">
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filter-tier-select">Verification Tier</label>
+            <select id="filter-tier-select" class="filter-select">
+              <option value="all">All Verification Tiers</option>
+              <option value="4">Tier 4: Master Guides (MoT / ASI Licensed)</option>
+              <option value="3">Tier 3+: State Tourism Certified</option>
+              <option value="2">Tier 2+: Police Cleared</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filter-lang-select">Language Spoken</label>
+            <select id="filter-lang-select" class="filter-select">
+              <option value="all">Any Language</option>
+              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="en">English Fluent</option>
+              <option value="fr">French (Français)</option>
+              <option value="de">German (Deutsch)</option>
+              <option value="es">Spanish (Español)</option>
+              <option value="sa">Sanskrit (संस्कृतम्)</option>
+              <option value="bn">Bengali (বাংলা)</option>
+              <option value="ta">Tamil (தமிழ்)</option>
+              <option value="ml">Malayalam (മലയാളം)</option>
+              <option value="mr">Marathi (मराठी)</option>
+              <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filter-sort-select">Sort By</label>
+            <select id="filter-sort-select" class="filter-select">
+              <option value="rating">Top Rated (Highest ★)</option>
+              <option value="reviews">Most Reviewed</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+
+          <button class="btn btn-ai-glow btn-full-width trigger-ai-match" style="margin-top: 0.5rem; font-size: 0.85rem;">
+            ⚡ Launch AI Matchmaker
+          </button>
+        </aside>
+
+        <!-- Center Guides Cards Grid -->
+        <main class="explore-main-pane">
+          <div class="guides-grid" id="guides-directory-grid"></div>
+        </main>
+
+        <!-- Right Leaflet Map Sidebar -->
+        <aside class="explore-map-sidebar">
+          <div class="map-card">
+            <div class="map-card-header">
+              <h3>Live Roster Location Map</h3>
+              <span class="map-live-dot">● Interactive</span>
+            </div>
+            
+            <div style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border-light);">
+              <select id="map-city-filter" class="filter-select" style="font-size: 0.78rem; padding: 0.35rem 0.6rem;">
+                <option value="all">Zoom to All India</option>
+                <option value="Varanasi">Varanasi, Uttar Pradesh</option>
+                <option value="Jaipur">Jaipur, Rajasthan</option>
+                <option value="Agra">Agra, Uttar Pradesh</option>
+                <option value="Kerala">Kochi &amp; Alleppey, Kerala</option>
+                <option value="Ladakh">Leh &amp; Ladakh</option>
+                <option value="Goa">Goa</option>
+                <option value="Udaipur">Udaipur, Rajasthan</option>
+                <option value="Rishikesh">Rishikesh, Uttarakhand</option>
+                <option value="Hampi">Hampi, Karnataka</option>
+                <option value="Kolkata">Kolkata, West Bengal</option>
+                <option value="Mumbai">Mumbai, Maharashtra</option>
+                <option value="Amritsar">Amritsar, Punjab</option>
+              </select>
+            </div>
+
+            <!-- Leaflet Map DOM Element -->
+            <div id="leaflet-map-container"></div>
+            
+            <div class="map-guides-list" id="map-sidebar-guides-list" style="max-height: 220px; overflow-y: auto;"></div>
+
+            <p class="map-footer-hint">💡 Zoom &amp; click golden pins to focus verified local guides in each region.</p>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- Top Iconic Destinations Showcase -->
+    <section class="container" style="padding-bottom: 3.5rem;">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2>Top Indian Heritage Destinations</h2>
+          <p>Click any destination to instantly filter verified local scholars and guides.</p>
+        </div>
+      </div>
+
+      <div class="dest-grid" id="destinations-grid"></div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="container" style="padding-bottom: 3.5rem;">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2>How GuideConnect Works</h2>
+          <p>From destination search to an unforgettable local experience in 4 simple steps.</p>
+        </div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-emoji">🗺️</div>
+          <div class="step-num">1</div>
+          <div class="step-title">Search Destination</div>
+          <div class="step-desc">Enter your destination city. Our system instantly surfaces verified local guides with verified government credentials.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-emoji">⚡</div>
+          <div class="step-num">2</div>
+          <div class="step-title">AI Smart Matching</div>
+          <div class="step-desc">Our algorithm evaluates language, interests, walking pace, and group budget to rank your ideal guide match.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-emoji">🔒</div>
+          <div class="step-num">3</div>
+          <div class="step-title">Escrow Protected Booking</div>
+          <div class="step-desc">Book securely with digital escrow. Your funds are held safely and released to the guide only after your tour completes.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-emoji">🌟</div>
+          <div class="step-num">4</div>
+          <div class="step-title">SafeWalk &amp; Review</div>
+          <div class="step-desc">Enjoy authentic Indian exploration with 24/7 GPS monitoring and one-tap emergency helpline assistance.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Royal Palace VIP Lounge -->
+    <section class="container" id="section-vip-lounge" style="padding-bottom: 3.5rem;">
+      <div class="vip-lounge-container">
+        <div style="text-align: center; max-width: 780px; margin: 0 auto 2rem;">
+          <span class="badge-vip-royal">👑 ROYAL ESCORT &amp; EXCLUSIVE SERVICES</span>
+          <h2 style="font-size: 2.2rem; font-weight: 900; color: #ffffff; margin-bottom: 0.75rem;">The Royal Palace VIP Lounge</h2>
+          <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">
+            Unrivaled luxury experiences for discerning global travelers. Access restricted heritage estates, private helicopter charters, and senior Indology professors.
+          </p>
+        </div>
+
+        <div class="vip-offers-grid">
+          <div class="vip-offer-card">
+            <div class="vip-offer-bg" style="background-image: url('https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=600&q=80');"></div>
+            <div class="vip-offer-content">
+              <span class="vip-tag-gold">Heritage Private Estate</span>
+              <h3>Amber Palace Private Dining &amp; Curator</h3>
+              <p>Exclusive after-hours access to Jaipur's Amber Fort with a personal master chef, royal classical performance, and private state historian escort.</p>
+              <div class="vip-price-row">
+                <span>All-Inclusive Cost:</span>
+                <strong>₹5,00,000</strong>
+              </div>
+              <button class="btn btn-gold btn-full-width" onclick="bookingSystemInstance.openVIPBooking('Amber Palace Private Dining & Curator', 500000)">
+                Request Royal VIP Access
+              </button>
+            </div>
+          </div>
+
+          <div class="vip-offer-card">
+            <div class="vip-offer-bg" style="background-image: url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80');"></div>
+            <div class="vip-offer-content">
+              <span class="vip-tag-gold">Private Air Transfer</span>
+              <h3>Taj Mahal Heli-Tour &amp; Landing Guide</h3>
+              <p>Skip airport lines and traffic. Direct luxury helicopter transfer from Delhi NCR straight to Agra with a senior ASI guide waiting on landing.</p>
+              <div class="vip-price-row">
+                <span>All-Inclusive Cost:</span>
+                <strong>₹2,50,000</strong>
+              </div>
+              <button class="btn btn-gold btn-full-width" onclick="bookingSystemInstance.openVIPBooking('Taj Mahal Heli-Tour & Landing Guide', 250000)">
+                Reserve Helicopter Charter
+              </button>
+            </div>
+          </div>
+
+          <div class="vip-offer-card">
+            <div class="vip-offer-bg" style="background-image: url('https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=600&q=80');"></div>
+            <div class="vip-offer-content">
+              <span class="vip-tag-gold">3-Day Custom Package</span>
+              <h3>Spiritual Varanasi Indology Scholar Escort</h3>
+              <p>A dedicated senior BHU Indology professor will accompany you for 3 days to private ashrams, secret Ganga rituals, and pre-dawn photography ghat slots.</p>
+              <div class="vip-price-row">
+                <span>All-Inclusive Cost:</span>
+                <strong>₹45,000</strong>
+              </div>
+              <button class="btn btn-gold btn-full-width" onclick="bookingSystemInstance.openVIPBooking('Spiritual Varanasi Indology Scholar Escort', 45000)">
+                Hire Scholar Escort
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="vip-shield-guarantee">
+          <h4>🔒 VIP Escrow Security &amp; Absolute NDA Guarantee</h4>
+          <p style="margin-top: 0.35rem;">All VIP experiences operate under absolute confidentiality clauses. Escrow payments are securely handled via state banking partners, and 24/7 dedicated security escorts are available upon request.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Trips & Bookings Section -->
+    <section class="container" id="my-trips-section" style="padding-bottom: 3.5rem;">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2>🎒 My Booked Trips &amp; QR Vouchers</h2>
+          <p>Access confirmed itineraries, live meeting landmarks, guide contacts, and verified booking passes.</p>
+        </div>
+      </div>
+
+      <div id="my-trips-list"></div>
+    </section>
+
+    <!-- Become a Guide Onboarding Section -->
+    <section class="container" id="section-become-guide" style="padding-bottom: 4rem;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2.5rem; box-shadow: var(--shadow-md); display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: center;">
+        <div>
+          <span class="verify-badge amber" style="margin-bottom: 0.75rem;">JOIN THE ELITE 1%</span>
+          <h2 style="font-size: 2rem; font-weight: 900; color: var(--text-main); margin-bottom: 0.75rem;">Guide With India's Premier Heritage Platform</h2>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
+            We do not register touts. Discerning international travelers choose GuideConnect because our partners are background-verified historians, scholars, and culinary masters who bill transparent hourly rates in ₹ INR.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">1</div>
+              <div>
+                <h4 style="font-weight: 800; font-size: 0.95rem;">Apply Online &amp; Upload License</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Provide credentials, service cities, and licensing documents.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">2</div>
+              <div>
+                <h4 style="font-weight: 800; font-size: 0.95rem;">History Exam &amp; Police Verification</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Complete our historical accuracy assessment and background check.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;">3</div>
+              <div>
+                <h4 style="font-weight: 800; font-size: 0.95rem;">Receive Instant Escrow Bookings</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Accept high-paying international tourist bookings with guaranteed payments.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Card -->
+        <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 800;">Guide Application Wizard</h3>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--primary);">Step <span id="guide-wizard-step">1</span> of 3</span>
+          </div>
+
+          <div style="height: 4px; background: var(--border-color); border-radius: 2px; margin-bottom: 1.25rem; overflow: hidden;">
+            <div id="guide-wizard-progress" style="height: 100%; width: 33%; background: var(--primary); transition: width 0.3s ease;"></div>
+          </div>
+
+          <form id="become-guide-form" onsubmit="event.preventDefault();">
+            <div id="become-step-1">
+              <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Full Name</label>
+                <input type="text" class="filter-select" placeholder="e.g. Priya Patel" required>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                  <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Heritage Base City</label>
+                  <select class="filter-select">
+                    <option value="Jaipur">Jaipur</option>
+                    <option value="Varanasi">Varanasi</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Agra">Agra</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Goa">Goa</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Primary Foreign Language</label>
+                  <select class="filter-select">
+                    <option value="English">English</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                    <option value="Spanish">Spanish</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="become-step-2" class="hidden">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                  <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Hourly Rate (INR ₹)</label>
+                  <input type="number" class="filter-select" value="750" min="300" max="10000">
+                </div>
+                <div>
+                  <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Experience (Years)</label>
+                  <input type="number" class="filter-select" value="5" min="1" max="40">
+                </div>
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Specialization</label>
+                <select class="filter-select">
+                  <option value="Heritage & Palaces">Heritage &amp; Palaces</option>
+                  <option value="Culinary & Street Food">Spice Trails &amp; Food</option>
+                  <option value="Spiritual & Wellness">Spiritual Walks &amp; Ghats</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="become-step-3" class="hidden">
+              <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Ministry of Tourism License Upload</label>
+                <div id="bg-upload-lic" style="border: 2px dashed var(--border-color); padding: 1.5rem; text-align: center; border-radius: var(--radius-md); cursor: pointer; background: var(--bg-card);">
+                  <div style="font-size: 1.75rem;">📂</div>
+                  <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-top: 0.35rem;">Click to Upload Tourism License</div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted);">PDF, JPG, PNG accepted (Max 5MB)</div>
+                  <input type="file" id="bg-file-input" style="display: none;">
+                </div>
+                <div id="upload-status-badge" class="hidden" style="margin-top: 0.5rem; color: var(--accent-emerald); font-size: 0.82rem; font-weight: 700;">
+                  ✓ Tourism_License_Document.pdf attached
+                </div>
+              </div>
+            </div>
+
+            <div id="become-success-overlay" class="hidden" style="text-align: center; padding: 1.5rem 0;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+              <h4 style="font-size: 1.2rem; font-weight: 800; color: var(--text-main);">Application Submitted!</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0 1.2rem;">Your credentials have been queued for Top 1% Ministry Vetting. We will email you assessment details within 48 hours.</p>
+              <button type="button" class="btn btn-primary" id="btn-become-success-done">Back to Explore</button>
+            </div>
+
+            <div id="become-wizard-footer" style="display: flex; justify-content: space-between; margin-top: 1.25rem;">
+              <button type="button" class="btn btn-secondary" id="btn-become-prev" disabled>Back</button>
+              <button type="button" class="btn btn-primary" id="btn-become-next">Next Step →</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       LOCAL GUIDE PARTNER PORTAL VIEW (DUAL PERSPECTIVE)
+       ========================================================================= -->
+  <section class="guide-portal-view" id="guide-portal-view" style="display: none; padding: 2.5rem 0 5rem;">
+    <div class="container">
+      
+      <!-- Guide Header Banner -->
+      <div style="background: linear-gradient(135deg, #042f2e, #0f766e); color: white; border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Guide Avatar" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid white; object-fit: cover;">
+          <div>
+            <h2 style="font-size: 1.8rem; font-weight: 800;">Namaste, Aarav Sharma ji! 🕉️</h2>
+            <p style="opacity: 0.85; font-size: 0.9rem;">📍 Varanasi, Uttar Pradesh • Ministry of Tourism Tier 4 Regional Guide (#RLG-NR-5521)</p>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="app.setPersonaMode('tourist')">
+          ← Switch Back to Tourist View
+        </button>
+      </div>
+
+      <!-- Guide Performance Analytics -->
+      <div class="portal-stats-grid">
+        <div class="portal-stat-card">
+          <h5>Total Platform Earnings</h5>
+          <div class="val" id="portal-stat-earnings" style="color: var(--accent-emerald);">₹84,500.00</div>
+          <span style="font-size: 0.75rem; color: var(--accent-emerald);">↑ 18% vs last month • 100% Escrow Protected</span>
+        </div>
+        <div class="portal-stat-card">
+          <h5>Completed Tours</h5>
+          <div class="val">1,140</div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">100% on-time arrival</span>
+        </div>
+        <div class="portal-stat-card">
+          <h5>Traveler Rating</h5>
+          <div class="val" style="color: var(--accent-amber);">4.99 ★</div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">From 520 verified reviews</span>
+        </div>
+        <div class="portal-stat-card">
+          <h5>Verification Status</h5>
+          <div class="val" style="color: var(--primary); font-size: 1.25rem;">Tier 4 MoT Licensed</div>
+          <span style="font-size: 0.75rem; color: var(--accent-emerald);">✓ Annual Police Clearance Active</span>
+        </div>
+      </div>
+
+      <div class="portal-section-grid">
+        <!-- Incoming Booking Requests & Earnings Chart -->
+        <div>
+          <div class="section-header" style="margin-bottom: 1.25rem;">
+            <div class="section-title-group">
+              <h3>📥 Incoming Booking Requests</h3>
+              <p>Review traveler inquiries and confirm your availability.</p>
+            </div>
+          </div>
+          
+          <div class="requests-card-list" id="guide-portal-requests-list"></div>
+
+          <!-- Monthly Performance Chart -->
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 2rem;">
+            <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem;">Monthly Revenue Trend</h4>
+            <div class="earnings-graph-container">
+              <div class="graph-bar-wrapper">
+                <div class="graph-bar" style="height: 40%;"><span>₹5.8K</span></div>
+                <span class="graph-label">May</span>
+              </div>
+              <div class="graph-bar-wrapper">
+                <div class="graph-bar" style="height: 65%;"><span>₹8.9K</span></div>
+                <span class="graph-label">Jun</span>
+              </div>
+              <div class="graph-bar-wrapper">
+                <div class="graph-bar" style="height: 85%;"><span>₹12.2K</span></div>
+                <span class="graph-label">Jul</span>
+              </div>
+              <div class="graph-bar-wrapper">
+                <div class="graph-bar active" style="height: 100%;"><span>₹14.5K</span></div>
+                <span class="graph-label">Aug (Current)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verification KYC Checklist & Quick Profile Settings -->
+        <div>
+          <div class="section-header" style="margin-bottom: 1.25rem;">
+            <div class="section-title-group">
+              <h3>🛡️ Government Credential Security</h3>
+              <p>Maintain your verified trust tier status.</p>
+            </div>
+          </div>
+          
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <div id="kyc-checklist-container"></div>
+            <div style="margin-top: 1.25rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+              <button class="btn btn-secondary" id="simulate-kyc-upload" style="width: 100%; font-size: 0.85rem;">
+                📤 Upload Renewed MoT License Document
+              </button>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.5rem;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 1rem;">Quick Profile Customizer</h4>
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Hourly Rate (INR ₹)</label>
+              <input type="number" class="filter-select" value="750" id="guide-edit-rate">
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Status</label>
+              <select class="filter-select">
+                <option value="available">● Accepting Instant Bookings</option>
+                <option value="busy">● Busy (Fully Booked)</option>
+                <option value="offline">● Offline</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="app.showToast('Profile Updated', 'Rate and availability saved to live roster.', 'success')">
+              Save Rate &amp; Availability
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       MODALS & INTERACTIVE WIZARDS
+       ========================================================================= -->
+
+  <!-- 1. GuideMatch AI Recommendation Wizard Modal -->
+  <div class="modal-overlay" id="ai-wizard-modal" role="dialog" aria-modal="true">
+    <div class="modal-container">
+      <button class="modal-close-btn" aria-label="Close AI Wizard">×</button>
+
+      <div style="padding: 1.75rem 1.75rem 1rem; border-bottom: 1px solid var(--border-color); text-align: center;">
+        <div class="verify-badge purple" style="margin-bottom: 0.5rem;">⚡ GuideMatch AI Engine • India Edition</div>
+        <h3 style="font-size: 1.4rem; font-weight: 900;">Find Your Perfect Indian Local Guide</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;">Answer 4 quick travel questions and our matching algorithm will score 5,000+ verified guides across India.</p>
+
+        <!-- Step Dots Indicator -->
+        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem;">
+          <div class="ai-step-dot active" style="width: 24px; height: 24px; border-radius: 50%; background: var(--accent-indigo); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">1</div>
+          <div class="ai-step-dot" style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">2</div>
+          <div class="ai-step-dot" style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">3</div>
+          <div class="ai-step-dot" style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">4</div>
+        </div>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <!-- Step 1: Destination -->
+        <div class="ai-wizard-step" id="ai-step-1">
+          <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; text-align: center;">Which Indian destination are you exploring?</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+            <div class="ai-choice-card selected" data-dest="Varanasi" style="background: var(--bg-card-subtle); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; text-align: center;">
+              <div style="font-size: 1.75rem;">🕉️</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Varanasi (Kashi)</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Ganga ghats &amp; Sanskrit lore</p>
+            </div>
+            <div class="ai-choice-card" data-dest="Jaipur" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; text-align: center;">
+              <div style="font-size: 1.75rem;">🏰</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Jaipur (Pink City)</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Amer Fort &amp; royal havelis</p>
+            </div>
+            <div class="ai-choice-card" data-dest="Agra" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; text-align: center;">
+              <div style="font-size: 1.75rem;">🕌</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Agra (Taj Mahal)</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Sunrise glow &amp; Mughal art</p>
+            </div>
+            <div class="ai-choice-card" data-dest="Kerala" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; text-align: center;">
+              <div style="font-size: 1.75rem;">🌴</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Kerala Backwaters</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Alleppey canoes &amp; spices</p>
+            </div>
+            <div class="ai-choice-card" data-dest="Ladakh" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; text-align: center;">
+              <div style="font-size: 1.75rem;">🏔️</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Leh &amp; Ladakh</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Cliff gompas &amp; passes</p>
+            </div>
+            <div class="ai-choice-card" data-dest="Goa" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; text-align: center;">
+              <div style="font-size: 1.75rem;">⛵</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Goa (Heritage)</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Fontainhas Latin quarter</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Travel Style -->
+        <div class="ai-wizard-step" id="ai-step-2" style="display: none;">
+          <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; text-align: center;">What is your primary travel interest?</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+            <div class="ai-choice-card selected" data-style="Spiritual & Wellness" style="background: var(--bg-card-subtle); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🪔</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Spiritual &amp; Temples</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Aarti ceremonies, dawn rowing, Vedic wisdom</p>
+            </div>
+            <div class="ai-choice-card" data-style="Culture & History" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">📜</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Forts &amp; Architecture</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Rajput &amp; Mughal palaces, stepwells</p>
+            </div>
+            <div class="ai-choice-card" data-style="Culinary & Street Food" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🍛</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Street Food &amp; Thalis</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Hygienic secret stalls &amp; royal recipes</p>
+            </div>
+            <div class="ai-choice-card" data-style="Nature & Adventure" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🥾</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Himalayas &amp; Backwaters</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Mountain trails &amp; canoe canals</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Guide Personality -->
+        <div class="ai-wizard-step" id="ai-step-3" style="display: none;">
+          <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; text-align: center;">What guide personality matches your vibe?</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+            <div class="ai-choice-card selected" data-persona="Spiritual" style="background: var(--bg-card-subtle); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🧘</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Serene &amp; Spiritual</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Calm, respectful, Sanskrit sloka explanations</p>
+            </div>
+            <div class="ai-choice-card" data-persona="Storyteller" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🎙️</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Engaging Storyteller</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Brings royal folklore and battles alive</p>
+            </div>
+            <div class="ai-choice-card" data-persona="Historian" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">📚</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">ASI Monument Historian</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Fact-dense architectural precision</p>
+            </div>
+            <div class="ai-choice-card" data-persona="Foodie" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🍲</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Passionate Foodie</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Focuses on authentic culinary jewels</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Group & Safety -->
+        <div class="ai-wizard-step" id="ai-step-4" style="display: none;">
+          <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; text-align: center;">Who is in your travel party?</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+            <div class="ai-choice-card selected" data-group="Family" style="background: var(--bg-card-subtle); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">👨‍👩‍👧‍👦</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Family with Elders / Kids</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Gentle pacing, e-rickshaw coordination, pure veg stops</p>
+            </div>
+            <div class="ai-choice-card" data-group="Solo" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🎒</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Solo Traveler / Woman</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Maximum safety &amp; verified companion protection</p>
+            </div>
+            <div class="ai-choice-card" data-group="Couple" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">💑</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Couple / Honeymoon</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Scenic photo angles &amp; sunset boat safaris</p>
+            </div>
+            <div class="ai-choice-card" data-group="Friends" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; cursor: pointer;">
+              <div style="font-size: 1.75rem;">🎉</div>
+              <h5 style="font-size: 0.95rem; font-weight: 800; margin: 0.3rem 0;">Friends / Backpackers</h5>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Dynamic adventure &amp; vibrant bazaar trails</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Animated Computing Screen -->
+        <div id="ai-computing-state" style="display: none; text-align: center; padding: 2.5rem 1rem;">
+          <div style="font-size: 3rem; animation: pulseDot 1.5s infinite;">⚡</div>
+          <h4 style="font-size: 1.4rem; font-weight: 800; margin: 0.75rem 0 0.25rem;">Computing AI Recommendations...</h4>
+          <p id="ai-scanning-status" style="font-size: 0.9rem; color: var(--primary); font-weight: 700;">Scanning verified Indian guides...</p>
+        </div>
+
+        <!-- AI Results State -->
+        <div id="ai-results-state" style="display: none;">
+          <h4 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; text-align: center;">🎯 Your Top AI-Recommended Indian Guides</h4>
+          <div id="ai-matched-guides-grid"></div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+          <button class="btn btn-secondary" id="ai-prev-btn" style="visibility: hidden;">
+            ← Back
+          </button>
+          <button class="btn btn-primary" id="ai-next-btn">
+            <span>Continue</span> →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Guide Profile Deep-Dive Modal -->
+  <div class="modal-overlay" id="guide-profile-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" id="guide-profile-dynamic-content"></div>
+  </div>
+
+  <!-- 3. Smart Booking Modal -->
+  <div class="modal-overlay" id="booking-modal" role="dialog" aria-modal="true">
+    <div class="modal-container">
+      <button class="modal-close-btn" aria-label="Close Booking Modal">×</button>
+
+      <div style="padding: 1.75rem 1.75rem 0.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem;">
+        <img id="booking-guide-avatar" src="" alt="Guide" style="width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+        <div>
+          <h3 id="booking-guide-name" style="font-size: 1.3rem; font-weight: 800;">Book Verified Guide</h3>
+          <p id="booking-guide-loc" style="font-size: 0.82rem; color: var(--text-muted);"></p>
+        </div>
+      </div>
+
+      <div style="padding: 1.5rem; display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.5rem;">
+        <!-- Left: Form inputs -->
+        <div>
+          <div style="margin-bottom: 1.25rem;">
+            <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 0.4rem;">Select Curated Package:</label>
+            <select id="booking-package-select" class="filter-select" style="width: 100%;"></select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div>
+              <label for="booking-date-input" style="font-size: 0.82rem; font-weight: 700; display: block; margin-bottom: 0.4rem;">📅 Tour Date:</label>
+              <input type="date" id="booking-date-input" class="filter-select">
+            </div>
+            <div>
+              <label for="booking-guests-input" style="font-size: 0.82rem; font-weight: 700; display: block; margin-bottom: 0.4rem;">👥 Number of Tourists:</label>
+              <input type="number" id="booking-guests-input" min="1" max="15" value="2" class="filter-select">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <label style="font-size: 0.82rem; font-weight: 700; display: block; margin-bottom: 0.4rem;">⏰ Preferred Time Slot:</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
+              <button class="btn btn-secondary btn-sm time-slot-btn selected" data-slot="Morning Darshan / Walk (06:00 - 10:00 AM)">🌅 Morning (06:00 AM)</button>
+              <button class="btn btn-secondary btn-sm time-slot-btn" data-slot="Mid-day Heritage Walk (10:30 AM - 02:30 PM)">☀️ Mid-day (10:30 AM)</button>
+              <button class="btn btn-secondary btn-sm time-slot-btn" data-slot="Sunset / Evening Aarti (04:30 - 08:30 PM)">🌇 Evening (04:30 PM)</button>
+              <button class="btn btn-secondary btn-sm time-slot-btn" data-slot="Full Day Immersion (08:30 AM - 05:30 PM)">🌟 Full Day (08:30 AM)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Summary & Escrow Protection -->
+        <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h4 style="font-size: 1rem; font-weight: 800; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">Price Summary</h4>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+              <span style="color: var(--text-muted);">Package Subtotal:</span>
+              <strong id="summary-subtotal">₹2,998.00</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--accent-emerald);">
+              <span>Festive Discount:</span>
+              <strong id="summary-discount">₹0.00</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.75rem;">
+              <span style="color: var(--text-muted);">Escrow Shield Fee:</span>
+              <span>₹99.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 900; border-top: 1px solid var(--border-color); padding-top: 0.6rem; color: var(--primary);">
+              <span>Total Amount:</span>
+              <span id="summary-total">₹3,097.00</span>
+            </div>
+
+            <div style="display: flex; gap: 0.4rem; margin-top: 0.75rem;">
+              <input type="text" id="booking-promo-input" class="filter-select" placeholder="Promo (try: NAMASTE10)" style="flex: 1; text-transform: uppercase; font-size: 0.8rem;">
+              <button class="btn btn-secondary btn-sm" id="apply-promo-btn">Apply</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" id="complete-booking-btn" style="margin-top: 1rem;">
+            🔒 Continue to Escrow Check-Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Secure Escrow Checkout & Multi-Payment Methods Modal -->
+  <div class="modal-overlay" id="modal-payment" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width: 600px;">
+      <button class="btn-close-modal" id="btn-close-payment" onclick="document.getElementById('modal-payment').classList.remove('active')">✕</button>
+      
+      <div style="padding: 1.5rem 1.5rem 0.5rem;">
+        <h3 style="font-size: 1.35rem; font-weight: 800;">Secure Escrow Check-Out</h3>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">Your payment is securely held in escrow and released to the guide only after your tour completes.</p>
+      </div>
+
+      <div style="padding: 0.75rem 1.5rem 1.5rem;">
+        
+        <!-- Payment Methods Tabs -->
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 1.25rem; background: var(--bg-card-subtle); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-ghost btn-sm payment-tab-btn active" data-method="card" onclick="bookingSystemInstance.setPaymentMethod('card')" style="flex:1;">
+            💳 Card
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm payment-tab-btn" data-method="upi" onclick="bookingSystemInstance.setPaymentMethod('upi')" style="flex:1;">
+            📱 UPI / QR
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm payment-tab-btn" data-method="netbanking" onclick="bookingSystemInstance.setPaymentMethod('netbanking')" style="flex:1;">
+            🏛️ NetBanking
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm payment-tab-btn" data-method="global" onclick="bookingSystemInstance.setPaymentMethod('global')" style="flex:1;">
+            🍏 1-Click Pay
+          </button>
+        </div>
+
+        <!-- 1. Credit Card Tab Content -->
+        <div id="pay-method-card">
+          <!-- Live 3D Credit Card Simulator -->
+          <div class="credit-card-preview">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="card-chip"></div>
+              <span style="font-weight: 800; color: var(--accent-amber); font-size: 0.85rem;">ESCROW SHIELD PAY</span>
+            </div>
+            <div class="card-number-display" id="card-num-disp">•••• •••• •••• ••••</div>
+            <div class="card-bottom-row">
+              <div>
+                <div class="card-label">CARD HOLDER</div>
+                <div id="card-name-disp" style="font-weight: 700;">YOUR NAME</div>
+              </div>
+              <div>
+                <div class="card-label">EXPIRES</div>
+                <div id="card-expiry-disp" style="font-weight: 700;">MM/YY</div>
+              </div>
+            </div>
+          </div>
+
+          <form id="payment-details-form">
+            <div style="margin-bottom: 0.85rem;">
+              <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Cardholder Name</label>
+              <input type="text" id="card-holder-name" placeholder="John Doe" class="filter-select" required>
+            </div>
+
+            <div style="margin-bottom: 0.85rem;">
+              <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Card Number</label>
+              <input type="text" id="card-number" placeholder="4000 1234 5678 9010" class="filter-select" maxlength="19" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Expiry Date</label>
+                <input type="text" id="card-expiry" placeholder="MM/YY" class="filter-select" maxlength="5" required>
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">CVV</label>
+                <input type="password" id="card-cvv" placeholder="•••" class="filter-select" maxlength="4" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full-width btn-xl" id="btn-submit-payment-charge">
+              Pay Escrow &amp; Secure Booking (<span id="checkout-charge-btn-price">₹2,950.00</span>)
+            </button>
+          </form>
+        </div>
+
+        <!-- 2. UPI / QR Instant Pay Tab Content -->
+        <div id="pay-method-upi" style="display: none; text-align: center;">
+          <div style="background: white; border: 2px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; display: inline-block; margin-bottom: 1rem;">
+            <svg viewBox="0 0 100 100" style="width: 130px; height: 130px;">
+              <rect width="100" height="100" fill="white"/>
+              <rect x="10" y="10" width="25" height="25" fill="#0f172a"/>
+              <rect x="15" y="15" width="15" height="15" fill="white"/>
+              <rect x="18" y="18" width="9" height="9" fill="#0f766e"/>
+              <rect x="65" y="10" width="25" height="25" fill="#0f172a"/>
+              <rect x="70" y="15" width="15" height="15" fill="white"/>
+              <rect x="73" y="18" width="9" height="9" fill="#0f766e"/>
+              <rect x="10" y="65" width="25" height="25" fill="#0f172a"/>
+              <rect x="15" y="70" width="15" height="15" fill="white"/>
+              <rect x="18" y="73" width="9" height="9" fill="#0f766e"/>
+              <rect x="42" y="42" width="16" height="16" fill="#f59e0b"/>
+            </svg>
+            <div style="font-size: 0.78rem; font-weight: 700; color: #0f172a; margin-top: 0.4rem;">Scan with GPay / PhonePe / Paytm / BHIM</div>
+          </div>
+
+          <div style="margin-bottom: 1rem; text-align: left;">
+            <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Or Enter UPI VPA ID:</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="upi-vpa-input" placeholder="e.g. traveler@okaxis" class="filter-select" style="flex:1;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="app.showToast('UPI Request Sent', 'Approve the authorization request in your UPI App.', 'info')">Verify VPA</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-full-width btn-xl" onclick="bookingSystemInstance.executeEscrowPayment()">
+            Confirm UPI Escrow Payment (<span id="checkout-upi-btn-price">₹2,950.00</span>)
+          </button>
+        </div>
+
+        <!-- 3. NetBanking Tab Content -->
+        <div id="pay-method-netbanking" style="display: none;">
+          <div style="margin-bottom: 1.25rem;">
+            <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.5rem;">Select State Banking Partner for Direct Escrow Hold:</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-card-subtle); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                <input type="radio" name="bank-select" checked> 🏛️ HDFC Bank
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-card-subtle); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                <input type="radio" name="bank-select"> 🏛️ State Bank of India
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-card-subtle); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                <input type="radio" name="bank-select"> 🏛️ ICICI Bank
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-card-subtle); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); cursor: pointer;">
+                <input type="radio" name="bank-select"> 🏛️ Axis Bank
+              </label>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-full-width btn-xl" onclick="bookingSystemInstance.executeEscrowPayment()">
+            Proceed to Bank Escrow Gateway (<span id="checkout-netbanking-btn-price">₹2,950.00</span>)
+          </button>
+        </div>
+
+        <!-- 4. 1-Click Global Pay Tab Content -->
+        <div id="pay-method-global" style="display: none; text-align: center; padding: 1rem 0;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🍏 ⚡ 🅿️</div>
+          <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.35rem;">1-Click Global Escrow Checkout</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Instant biometric authorization with Apple Pay, Google Pay or PayPal with full buyer protection.</p>
+
+          <button type="button" class="btn btn-primary btn-full-width btn-xl" onclick="bookingSystemInstance.executeEscrowPayment()">
+            Authorize 1-Click Escrow (<span id="checkout-global-btn-price">₹2,950.00</span>)
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Booking Confirmed Success Panel -->
+  <section id="section-booking-success" class="app-section hidden" style="position: fixed; inset: 0; background: rgba(15,23,42,0.85); backdrop-filter: blur(10px); z-index: 9995; display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); max-width: 540px; width: 100%; padding: 2.5rem; text-align: center; box-shadow: var(--shadow-xl);">
+      <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+      <h2 style="font-size: 1.8rem; font-weight: 900; color: var(--text-main); margin-bottom: 0.5rem;">Escrow Booking Confirmed!</h2>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">Your funds are securely held in escrow. They will be released to your verified guide only after your tour completes.</p>
+      
+      <div style="background: var(--bg-card-subtle); border-radius: var(--radius-md); padding: 1rem; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Verified Guide:</span>
+          <strong id="success-guide-name">Aarav Sharma</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Date &amp; Slot:</span>
+          <strong id="success-booking-date">August 27, 2026</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Party Size:</span>
+          <strong id="success-booking-hours">2 Travelers</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">Status:</span>
+          <strong style="color: var(--accent-emerald);">🛡️ Escrow Protected</strong>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: center;">
+        <button class="btn btn-primary" id="btn-success-chat">Message Guide Now</button>
+        <button class="btn btn-secondary" id="btn-success-dashboard">View My Bookings</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Booking Confirmation QR Voucher Modal -->
+  <div class="modal-overlay" id="voucher-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 520px; padding: 1.75rem;" id="voucher-modal-content"></div>
+  </div>
+
+  <!-- 7. Live In-App Chat Messenger Modal -->
+  <div class="modal-overlay" id="chat-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 680px; padding: 0;">
+      <button class="modal-close-btn" onclick="document.getElementById('chat-modal').classList.remove('active')">×</button>
+
+      <div class="chat-container" style="height: 520px; border: none; border-radius: var(--radius-xl);">
+        <aside class="chat-sidebar">
+          <div style="padding: 1rem; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 0.95rem;">
+            Active Messages
+          </div>
+          <div id="conversations-list"></div>
+        </aside>
+
+        <div class="chat-main-window">
+          <div class="chat-window-header">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <img id="chat-guide-avatar" src="" alt="Guide" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+              <div>
+                <h4 id="chat-guide-name" style="font-size: 0.95rem; font-weight: 800;">Guide Name</h4>
+                <p id="chat-guide-lang" style="font-size: 0.72rem; color: var(--text-muted);"></p>
+              </div>
+            </div>
+
+            <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; font-weight: 700; color: var(--primary); cursor: pointer;">
+              <input type="checkbox" id="chat-translate-checkbox" checked style="accent-color: var(--primary);">
+              🌐 Auto-Translate ON
+            </label>
+          </div>
+
+          <div class="chat-messages-area" id="chat-messages-container"></div>
+
+          <div class="quick-suggest-row">
+            <button class="quick-reply-pill">Where is our exact meetup landmark?</button>
+            <button class="quick-reply-pill">Will pure vegetarian food be provided?</button>
+            <button class="quick-reply-pill">What temple dress code is recommended?</button>
+            <button class="quick-reply-pill">Can you arrange an e-rickshaw for elders?</button>
+          </div>
+
+          <div class="chat-input-bar">
+            <input type="text" id="chat-input-text" placeholder="Type a message (translates into guide's native language)..." autocomplete="off">
+            <button class="btn btn-primary btn-sm" id="chat-send-btn">Send ➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Safety & 24/7 Tourist SOS Emergency Modal -->
+  <div class="modal-overlay" id="sos-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 580px; padding: 1.75rem;">
+      <button class="modal-close-btn" onclick="document.getElementById('sos-modal').classList.remove('active')">×</button>
+
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.2rem; color: var(--accent-rose);">🚨</div>
+        <div>
+          <h3 style="font-size: 1.35rem; font-weight: 900; color: var(--accent-rose);">24/7 Indian Tourist Emergency SOS Hub</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Direct emergency assistance connecting you with Tourist Police desks, National 112 Dispatch, and Ministry of Tourism Multi-lingual Infoline.</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label for="sos-country-select" style="font-size: 0.8rem; font-weight: 800; display: block; margin-bottom: 0.35rem;">Select Current Travel State / Region in India:</label>
+        <select id="sos-country-select" class="filter-select" style="font-weight: 700;">
+          <option value="IN">🇮🇳 All-India National Emergency Desk</option>
+          <option value="UP">🏛️ Uttar Pradesh (Varanasi, Agra, Lucknow)</option>
+          <option value="RJ">🏰 Rajasthan (Jaipur, Udaipur, Jodhpur)</option>
+          <option value="KL">🌴 Kerala (Kochi, Alleppey, Munnar)</option>
+          <option value="GOA">⛵ Goa (Panaji &amp; Coastal Desks)</option>
+          <option value="LAD">🏔️ Ladakh (Leh &amp; Kargil Desks)</option>
+        </select>
+        <div id="sos-lang-info" style="font-size: 0.78rem; color: var(--primary); font-weight: 700; margin-top: 0.35rem;"></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">POLICE DISPATCH</div>
+          <div id="sos-police-num" style="font-size: 1.35rem; font-weight: 900; color: var(--accent-rose); margin: 0.25rem 0;">112</div>
+          <button class="btn btn-danger btn-sm btn-full" onclick="app.showToast('Connecting 112', 'Directing to National Police Dispatch...', 'danger')">Call 112</button>
+        </div>
+        <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">AMBULANCE / MED</div>
+          <div id="sos-ambulance-num" style="font-size: 1.35rem; font-weight: 900; color: #ea580c; margin: 0.25rem 0;">108</div>
+          <button class="btn btn-sm btn-full" style="background:#ea580c;color:white;" onclick="app.showToast('Connecting 108', 'Directing to Medical Ambulance...', 'info')">Call 108</button>
+        </div>
+        <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">MOT TOURIST HELPLINE</div>
+          <div id="sos-hotline-num" style="font-size: 1.05rem; font-weight: 900; color: var(--primary); margin: 0.4rem 0;">1363 (Toll Free)</div>
+          <button class="btn btn-primary btn-sm btn-full" onclick="app.showToast('Connecting 1363', 'Connecting to 24/7 Ministry of Tourism Infoline in 12 languages...', 'info')">Call 1363</button>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+        <h4 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 0.35rem;">📍 Live WhatsApp &amp; Tourist Police Safety Beacon</h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">1-Click broadcasts your real-time GPS coordinates and verified guide badge details to your pre-saved family WhatsApp contacts and local Tourist Police.</p>
+        <button class="btn btn-danger btn-full" id="generate-beacon-btn">
+          📡 Broadcast Live GPS Safety Beacon
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Saved Wishlist Modal -->
+  <div class="modal-overlay" id="wishlist-modal" role="dialog" aria-modal="true">
+    <div class="modal-container" style="max-width: 580px; padding: 1.75rem;">
+      <button class="modal-close-btn" onclick="document.getElementById('wishlist-modal').classList.remove('active')">×</button>
+      
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <span style="font-size: 1.5rem; color: var(--accent-rose);">♥</span>
+        <h3 style="font-size: 1.3rem; font-weight: 800;">My Saved Favorite Guides</h3>
+      </div>
+
+      <div id="wishlist-modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <span style="font-size: 1.4rem;">🧭</span>
+            <h3>GuideConnect India</h3>
+          </div>
+          <p>Connecting travelers with certified, verified local guides across 28 Indian states in partnership with Ministry of Tourism standards.</p>
+          <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+            <span class="verify-badge emerald">✓ Incredible India</span>
+            <span class="verify-badge blue">✓ 100% Aadhaar Verified</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Top Destinations</h4>
+          <ul>
+            <li><a href="#explore" onclick="app.selectLocation('Varanasi');">Varanasi Ghat Guides</a></li>
+            <li><a href="#explore" onclick="app.selectLocation('Jaipur');">Jaipur Royal Historians</a></li>
+            <li><a href="#explore" onclick="app.selectLocation('Agra');">Agra ASI Taj Guides</a></li>
+            <li><a href="#explore" onclick="app.selectLocation('Kerala');">Kerala Backwaters Naturalists</a></li>
+            <li><a href="#explore" onclick="app.selectLocation('Ladakh');">Ladakh Himalayan Trekkers</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Safety &amp; Verification</h4>
+          <ul>
+            <li><a href="#" class="trigger-ai-match">GuideMatch AI Engine</a></li>
+            <li><a href="#" class="trigger-sos-modal">1363 / 112 Tourist Safety Hub</a></li>
+            <li><a href="#" onclick="app.setPersonaMode('guide')">Become an Indian Verified Guide</a></li>
+            <li><a href="#" onclick="app.showToast('MoT Accreditation', 'All guides hold Ministry of Tourism or State Tourism licenses.', 'info')">Ministry of Tourism Standards</a></li>
+            <li><a href="#" onclick="app.showToast('Escrow Guarantee', 'Your payment is held in escrow until tour completion.', 'info')">100% Escrow Guarantee</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Traveler Protection</h4>
+          <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; color: #94a3b8;">
+            Protected by GuideConnect India Travel Shield. Zero touts, no forced shopping stops, and pure authentic experiences.
+          </p>
+          <button class="btn btn-ai-glow btn-full trigger-ai-match" style="font-size: 0.85rem;">
+            ⚡ Match with a Guide
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 GuideConnect India. All rights reserved. Supporting Sustainable &amp; Responsible Tourism.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#" onclick="app.showToast('Privacy Policy', 'GuideConnect operates under Strict Zero-Data-Selling privacy standards.', 'info');return false;">Privacy Policy</a>
+          <a href="#" onclick="app.showToast('Escrow Guarantee', '100% money-back escrow dispute resolution within 24 hours.', 'info');return false;">Escrow Terms</a>
+          <a href="#" onclick="app.showToast('MoT Accreditation', 'Verified against the official Ministry of Tourism portal.', 'info');return false;">MoT Verification</a>
+          <a href="#" class="trigger-sos-modal">Security Hub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet Map JS Library -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Application Logic Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ai-matcher.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/booking.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/guide-portal.js"></script>
+  <script src="js/safety-hub.js"></script>
+
+</body>
+</html>
